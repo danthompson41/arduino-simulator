@@ -8,8 +8,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <arduino-simulator.h>
 
-int main(void) {
+int HelloWorld(void) {
 	puts("Hello Engineers!");
 	return EXIT_SUCCESS;
 }
