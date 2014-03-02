@@ -7,7 +7,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <arduino-simulator.h>
 #include <serial.h>
 
 int main (int argc, char* argv[])
