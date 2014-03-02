@@ -4,6 +4,7 @@
  *  Created on: Feb 28, 2014
  *      Author: Dan
  */
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <arduino-simulator.h>
@@ -29,35 +30,41 @@ int main (int argc, char* argv[])
 	}
 
 	// Get Filename
-	char filename[256];
+	char filename[1024];
 	strcpy(filename, argv[1]);
 
 	std::cout << "  COMPort: COM" << iComport << std::endl;
 	std::cout << "SleepFile: " << filename << std::endl;
 
-	return 1;
+
+	// prepare file reading
+	std::ifstream sleepFileHdl (filename);
+	// TODO: Error check
 
 
-
-
-
-
-
-
+	// prepare serial
 	CSerial serial;
-	if (!serial.Open(7,9600))
+	if (!serial.Open(iComport,9600))
 	{
 		std::cout << "ERROR: Could not open serial";
 		return 0;
 	}
 
-	char szMessage[] = "This is test data";
-
-	int nBytesSent = serial.SendData(szMessage, strlen(szMessage));
-
-	if (nBytesSent <= 0)
+	std::string line;
+	while (std::getline (sleepFileHdl, line))
 	{
-		std::cout << "ERROR: Could not write data";
+		// serial functions require a char*, so convert string to array
+		char charbuff[256];
+		memcpy(charbuff, line.c_str(), line.size());
+
+		// send string on serial
+		int nBytesSent = serial.SendData(charbuff, strlen(charbuff));
+
+		if (nBytesSent <= 0)
+		{
+			std::cout << "ERROR: Could not write data";
+		}
+		serial.SendData("\n", strlen("\n"));
 	}
 
 	return 1;
